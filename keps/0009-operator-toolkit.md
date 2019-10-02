@@ -103,33 +103,35 @@ An operator package is a folder that contains all of the manifests needed to cre
 `operator.yaml` is the base definition of an operator.  It follows the following reference format.
 
 ```yaml
-name: str(max=253, constraints="lowercase alphanumeric characters, -, and .")
-description: str(required=False)
-version: semver(desc='version of operator', example="0.3.0")
-appVersion: str(desc='version of underlying service if applicable', required=False, example="v1.0-rc2")
-kudoVersion: semver(desc='minimal required version of KUDO required for this operator')
-kubernetesVersion: semver(desc='minimal required version of Kubernetes required for this operator')
-maintainers: array(required=False, object=Maintainer)
-  - name: str()
-    email: email()
-  - name: str()
-    email: email()
-url: url(required=False)
-tasks: map[string]TaskSpec
-  str(max 253, desc='name of task'):
-    resources: array(str)
-      - str(desc='name of resource file')
-plans: map[string]Plan
-  str(max 253, desc='name of plan'):
-    strategy: ordering(serial|parallel, desc='determines how to order phases', default="serial" required=False)
-    phases: array(Phase)
-      - name: str(max=253, desc="name of phase")
-        strategy: ordering(serial|parallel, desc='determines how to order steps in a phase')
-        steps: array(Step)
-         - name: str(max=253, desc="name of step")
-           tasks: array(str)
-             - str(desc='must be a name of a task in tasks map')
-           delete: bool(desc='delete pod when finished', required=False)
+name: "operator"
+description: "operator desc"
+version: "0.3.0"
+appVersion: "v1.0-rc2"
+kudoVersion: "0.8.0"
+kubernetesVersion: "1.16"
+maintainers: 
+  - name: "Billy Bob"
+    email: "bb@kudo.dev"
+url: "kudo.dev"
+tasks:
+  deploy:
+    resources:
+      - pvc.yaml
+      - deployment.yaml
+  validation:
+    resources:
+      - validation.yaml
+plans: 
+  deploy:
+    strategy: serial
+    phases:
+      - name: zookeeper
+        strategy: parallel
+        steps:
+         - name: validation
+           tasks:
+             - validation
+           delete: true
 ```
 
 An example looks like:
@@ -190,13 +192,13 @@ The `params.yaml` file is a struct that defines parameters for operator. This ca
 
 ```yaml
 map[str]Parameter
-str(desc='param name'):
-  name: str(max=253, desc="name to be used in template files")
-  displayName: str(max=253, desc="display name of parameter")
-  description: str(desc='details regarding the param and how it will affect the operator')
-  required: bool(required=False, desc='expresses that a non default value most be provided')
-  default: str()
-  trigger: str(desc='identifies plan that gets executed when this parameter changes in an instance object')
+PARAM_NAME:
+  name: "parameter"
+  displayName: "parameter display"
+  description: "parameter desc"
+  required: true
+  default: "param default"
+  trigger: "backup"
 ```
 
 An example looks like:

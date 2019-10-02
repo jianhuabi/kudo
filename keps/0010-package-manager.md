@@ -178,23 +178,16 @@ Safety when distributing our Packages is another concern. As we continue working
 `index.yaml` is the base definition of a repository.  It follows the following reference format.
 
 ```yaml
-apiVersion: str(desc='version of repository')
-entries: map[string]PackageVersions
-  str(desc='name of operator'):
-  - name:  str(max=253)
-    version: semver()
-    appVersion: str(desc='component controlled version', required=False)
-    home: url(desc='home page, git repo', required=False)
-    sources: array(str, required=False)
-    - str(desc='source code for this operator')
-    description: str(required=False)
-    maintainers: array(Maintainer, required=False)
-    - name: str()
-      email: email()
-    deprecated: bool(desc='reflects if operator is deprecated')    
-    urls: array(url)
-    - url(desc='full url to operator tarball')
-    removed: bool(desc='', required=False)
+apiVersion: v1
+entries: 
+  zookeeper:
+  - name:  zookeeper
+    version: "1.0.0"
+    appVersion: "3.10.5"
+    description: "description"
+    maintainers: 
+    - name: "Billy Bob"
+      email: "bb@kudo.dev"
     digest: sha256(required=False)
 generated: timestamp()    
 ```
